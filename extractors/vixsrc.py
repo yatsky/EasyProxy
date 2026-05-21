@@ -65,12 +65,20 @@ class VixSrcExtractor:
         """Fetch Cloudflare-protected embeds with curl_cffi instead of aiohttp/proxy."""
         from curl_cffi.requests import AsyncSession as CurlAsyncSession
 
+        proxy = self._normalize_proxy_url(self.proxies[0]) if self.proxies else None
+        request_kwargs = {}
+        if proxy:
+            request_kwargs["proxies"] = {"http": proxy, "https": proxy}
+            self.last_used_proxy = proxy
+            logger.info("curl_cffi using proxy for %s", url)
+
         async with CurlAsyncSession(impersonate="chrome131") as session:
             resp = await session.get(
                 url,
                 headers=headers,
                 timeout=30,
                 allow_redirects=True,
+                **request_kwargs,
             )
             content = resp.text
 
