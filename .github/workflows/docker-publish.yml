@@ -1,9 +1,11 @@
-name: Build and Push Docker images to GHCR
+name: Build and Push zh-CN Docker image to GHCR
 on:
+  push:
+    branches: [zh-cn]
   workflow_dispatch:
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: realbestia1/easyproxy
+  IMAGE_NAME: yatsky/easyproxy
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -30,7 +32,7 @@ jobs:
           file: ./Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:zh-cn
           build-args: |
             FLARESOLVERR_REFRESH=${{ github.run_id }}
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
